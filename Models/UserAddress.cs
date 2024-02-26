@@ -5,7 +5,7 @@ namespace ApiAppBangHang.Models
     public class UserAddress
     {
         public int UserAddressId { get; set; }
-        public int UserId { get; set; }
+        public string UserId { get; set; }
         public AppUser User { get; set; }
 
         public AddressDetail AddressDetail { get; set; }

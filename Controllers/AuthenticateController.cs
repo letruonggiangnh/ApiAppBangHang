@@ -16,6 +16,7 @@ using SendGrid;
 using ApiAppBangHang.Interface;
 using System.Net;
 using ApiAppBangHang.Models;
+using AppBanHang.Bussiness.Repository;
 
 namespace ApiAppBanSach.Controllers
 {
@@ -28,7 +29,7 @@ namespace ApiAppBanSach.Controllers
         private readonly SignInManager<IdentityUser> _signInManager;
         private readonly IConfiguration _configuration;
         private readonly IEmailSender _emailSender;
-        private readonly IAppUsers _appUsers;
+        private UserRepository _userRepository;
 
         public AuthenticateController(
             UserManager<IdentityUser> userManager,
@@ -36,14 +37,15 @@ namespace ApiAppBanSach.Controllers
             IConfiguration configuration,
             IEmailSender emailSender,
             SignInManager<IdentityUser> signInManager,
-            IAppUsers appUsers)
+            UserRepository userRepository
+            )
         {
             _userManager = userManager;
             _roleManager = roleManager;
             _configuration = configuration;
             _emailSender = emailSender;
             _signInManager = signInManager;
-            _appUsers = appUsers;
+            _userRepository = userRepository;
         }
 
         [HttpPost]
@@ -65,10 +67,10 @@ namespace ApiAppBanSach.Controllers
                 {
                     var userRoles = await _userManager.GetRolesAsync(user);
                     var authClaims = new List<Claim>
-                {
-                    new Claim(ClaimTypes.Name, user.UserName),
-                    new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                };
+                    {
+                        new Claim(ClaimTypes.Name, user.UserName),
+                        new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                    };
 
                     foreach (var userRole in userRoles)
                     {
@@ -135,12 +137,22 @@ namespace ApiAppBanSach.Controllers
                     {
                         Email = model.Email,
                         SecurityStamp = Guid.NewGuid().ToString(),
-                        UserName = model.Username
+                        UserName = model.Username,
+                        Id = Guid.NewGuid().ToString()
                     };
                     var result = await _userManager.CreateAsync(user, model.Password);
                     if (!result.Succeeded)
                         return base.StatusCode(StatusCodes.Status500InternalServerError, new Models.Response { Status = "Error", Message = "Đăng ký thất bại! Kiểm tra lại thông tin đăng ký" });
-                    
+
+                    AppUser appUser = new AppUser();
+                    appUser.AppUserId = user.Id;
+                    appUser.EmailAddress = user.Email;
+                    appUser.Updated = DateTime.Now;
+                    string strError = "";
+
+                    _userRepository.Create(appUser, ref strError);
+
+
                     //tạo token xác thực email
                     var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                     var confirmationLink = Url.Action("ConfirmEmail", "Authenticate", new {token, userId = user.Id}, Request.Scheme);

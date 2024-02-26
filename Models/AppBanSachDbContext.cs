@@ -8,7 +8,7 @@ namespace ApiAppBangHang.Models
 {
     public class AppBanSachDbContext : IdentityDbContext<IdentityUser>
     {
-        public AppBanSachDbContext(DbContextOptions<AppBanSachDbContext> options) : base(options)
+        public AppBanSachDbContext(DbContextOptions options) : base(options)
         {
         }
        
@@ -21,7 +21,7 @@ namespace ApiAppBangHang.Models
             base.OnModelCreating(builder);
 
             builder.Entity<AppUser>(entity => {
-                entity.HasKey(p => p.Id);
+                entity.HasKey(p => p.AppUserId);
                 entity.HasMany(user => user.UserAddresses)
                     .WithOne(userAddress => userAddress.User)
                     .HasForeignKey(userAddress => userAddress.UserId);
