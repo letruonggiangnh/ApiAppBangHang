@@ -13,7 +13,7 @@ namespace ApiAppBangHang
         }
         AppBanSachDbContext context;
         private GenericRepository<AppUser> appUserRepository;
-
+        private GenericRepository<ProductBook> productBookRepository;
         private bool disposed = false;
         public GenericRepository<AppUser> AppUserRepository
         {
@@ -27,6 +27,19 @@ namespace ApiAppBangHang
                 return appUserRepository;
             }
         }
+
+        public GenericRepository<ProductBook> ProductBookRepository
+        {
+            get 
+            {
+                if (this.productBookRepository == null) 
+                {
+                    this.productBookRepository = new GenericRepository<ProductBook>(context);
+                }
+                return productBookRepository;
+            }
+        }
+
         protected virtual void Dispose(bool disposing)
         {
             if (!this.disposed)

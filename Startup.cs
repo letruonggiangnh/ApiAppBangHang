@@ -35,7 +35,6 @@ namespace ApiAppBangHang
 
             services.AddControllers();
             services.AddSingleton<IEmailSender, EmailSender>();
-            services.AddScoped<UnitOfWork>();
             services.AddDbContext<AppBanSachDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("SqlConnection")));
             services.AddIdentity<IdentityUser, IdentityRole>(options =>
             { 

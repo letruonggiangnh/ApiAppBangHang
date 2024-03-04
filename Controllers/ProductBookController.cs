@@ -1,12 +1,27 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using ApiAppBangHang.Models;
+using ApiAppBanSach.Models;
+using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Linq;
 
 namespace ApiAppBangHang.Controllers
 {
+    [Route("api/[controller]")]
+    [ApiController]
     public class ProductBookController : ControllerBase
     {
-        public IActionResult Index()
+        private readonly UnitOfWork unitOfWork;
+        public ProductBookController(AppBanSachDbContext context)
         {
-            return Ok();
+            unitOfWork = new UnitOfWork(context);
+        }
+
+        [HttpGet]
+        [Route("book")]
+        public IActionResult Get()
+        {  
+            var user = unitOfWork.ProductBookRepository.Get(filter: p => p.CategoryChildId == 10);
+            return Ok(user);
         }
     }
 }

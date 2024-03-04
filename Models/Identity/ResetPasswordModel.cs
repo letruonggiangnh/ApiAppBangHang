@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace ApiAppBangHang.Models
+namespace ApiAppBangHang.Models.Identity
 {
     public class ResetPasswordModel
     {

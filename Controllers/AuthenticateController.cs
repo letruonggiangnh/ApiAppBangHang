@@ -17,6 +17,7 @@ using ApiAppBangHang.Interface;
 using System.Net;
 using ApiAppBangHang.Models;
 using ApiAppBangHang;
+using ApiAppBangHang.Models.Identity;
 
 
 namespace ApiAppBanSach.Controllers
@@ -38,7 +39,7 @@ namespace ApiAppBanSach.Controllers
             IConfiguration configuration,
             IEmailSender emailSender,
             SignInManager<IdentityUser> signInManager,
-            UnitOfWork unit
+            AppBanSachDbContext context
             )
         {
             _userManager = userManager;
@@ -46,7 +47,7 @@ namespace ApiAppBanSach.Controllers
             _configuration = configuration;
             _emailSender = emailSender;
             _signInManager = signInManager;
-            _unitOfWork = unit;
+            _unitOfWork = new UnitOfWork(context);
         }
 
         [HttpPost]
@@ -56,6 +57,8 @@ namespace ApiAppBanSach.Controllers
             try
             {
                 var user = await _userManager.FindByNameAsync(model.Username);
+                if(user == null)
+                    return base.StatusCode(StatusCodes.Status500InternalServerError, new Models.Response { Status = "Error", Message = "Tài khoản không tồn tại!" });
                 var isPasswordCorrect = await _userManager.CheckPasswordAsync(user, model.Password);
                 var isEmailConfirmed = await _userManager.IsEmailConfirmedAsync(user);
                 var isLockedOut = await _userManager.IsLockedOutAsync(user);

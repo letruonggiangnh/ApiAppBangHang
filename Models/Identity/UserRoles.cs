@@ -1,4 +1,4 @@
-﻿namespace ApiAppBanSach.Models
+﻿namespace ApiAppBangHang.Models.Identity
 {
     public class UserRoles
     {
