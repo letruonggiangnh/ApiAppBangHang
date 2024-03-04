@@ -16,7 +16,8 @@ using SendGrid;
 using ApiAppBangHang.Interface;
 using System.Net;
 using ApiAppBangHang.Models;
-using AppBanHang.Bussiness.Repository;
+using ApiAppBangHang;
+
 
 namespace ApiAppBanSach.Controllers
 {
@@ -29,7 +30,7 @@ namespace ApiAppBanSach.Controllers
         private readonly SignInManager<IdentityUser> _signInManager;
         private readonly IConfiguration _configuration;
         private readonly IEmailSender _emailSender;
-        private UserRepository _userRepository;
+        private UnitOfWork _unitOfWork;
 
         public AuthenticateController(
             UserManager<IdentityUser> userManager,
@@ -37,7 +38,7 @@ namespace ApiAppBanSach.Controllers
             IConfiguration configuration,
             IEmailSender emailSender,
             SignInManager<IdentityUser> signInManager,
-            UserRepository userRepository
+            UnitOfWork unit
             )
         {
             _userManager = userManager;
@@ -45,7 +46,7 @@ namespace ApiAppBanSach.Controllers
             _configuration = configuration;
             _emailSender = emailSender;
             _signInManager = signInManager;
-            _userRepository = userRepository;
+            _unitOfWork = unit;
         }
 
         [HttpPost]
@@ -133,6 +134,10 @@ namespace ApiAppBanSach.Controllers
                     if (userExists != null)
                         return base.StatusCode(StatusCodes.Status500InternalServerError, new Models.Response { Status = "Error", Message = "Tài khoản đã tồn tại!" });
 
+                    var emailExists = await _userManager.FindByEmailAsync(model.Email);
+                    if (emailExists != null)
+                        return base.StatusCode(StatusCodes.Status500InternalServerError, new Models.Response { Status = "Error", Message = "Email đã tồn tại!" });
+
                     IdentityUser user = new()
                     {
                         Email = model.Email,
@@ -144,20 +149,22 @@ namespace ApiAppBanSach.Controllers
                     if (!result.Succeeded)
                         return base.StatusCode(StatusCodes.Status500InternalServerError, new Models.Response { Status = "Error", Message = "Đăng ký thất bại! Kiểm tra lại thông tin đăng ký" });
 
+                    //thông tin người dùng app
                     AppUser appUser = new AppUser();
                     appUser.AppUserId = user.Id;
                     appUser.EmailAddress = user.Email;
                     appUser.Updated = DateTime.Now;
-                    string strError = "";
-
-                    _userRepository.Create(appUser, ref strError);
+                    
+                    //tạo người dùng app
+                    _unitOfWork.AppUserRepository.Insert(appUser);
+                    _unitOfWork.Save();
 
 
                     //tạo token xác thực email
                     var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                     var confirmationLink = Url.Action("ConfirmEmail", "Authenticate", new {token, userId = user.Id}, Request.Scheme);
                     SendGrid.Response response = await _emailSender.SendEmailConfirmationAsync(user, confirmationLink);
-                   
+                    
                     if (response.IsSuccessStatusCode)
                     {
                         return base.Ok(new Models.Response { Status = "Success", Message = "Đăng ký thành công! Kiểm tra email xác thực" });

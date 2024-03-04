@@ -1,8 +1,6 @@
 using ApiAppBangHang.Implements;
 using ApiAppBangHang.Interface;
 using ApiAppBangHang.Models;
-using AppBanHang.Bussiness.Repository;
-using AppBanHang.Bussiness.UnitOfWork;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -37,8 +35,7 @@ namespace ApiAppBangHang
 
             services.AddControllers();
             services.AddSingleton<IEmailSender, EmailSender>();
-            services.AddTransient<UserRepository>();
-            services.AddTransient<WorkUnit>();
+            services.AddScoped<UnitOfWork>();
             services.AddDbContext<AppBanSachDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("SqlConnection")));
             services.AddIdentity<IdentityUser, IdentityRole>(options =>
             { 

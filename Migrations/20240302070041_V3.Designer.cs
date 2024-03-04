@@ -4,14 +4,16 @@ using ApiAppBangHang.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace ApiAppBangHang.Migrations
 {
     [DbContext(typeof(AppBanSachDbContext))]
-    partial class AppBanSachDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240302070041_V3")]
+    partial class V3
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -112,26 +114,6 @@ namespace ApiAppBangHang.Migrations
                     b.ToTable("BookCategoryParents");
                 });
 
-            modelBuilder.Entity("ApiAppBangHang.Models.BookDescription", b =>
-                {
-                    b.Property<int>("BookDescriptionId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("BookId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("BookDescriptionId");
-
-                    b.HasIndex("BookId");
-
-                    b.ToTable("BookDescriptions");
-                });
-
             modelBuilder.Entity("ApiAppBangHang.Models.BookTag", b =>
                 {
                     b.Property<int>("BookTagId")
@@ -165,6 +147,9 @@ namespace ApiAppBangHang.Migrations
 
                     b.Property<int>("CategoryChildId")
                         .HasColumnType("int");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<double>("Discount")
                         .HasColumnType("float");
@@ -443,17 +428,6 @@ namespace ApiAppBangHang.Migrations
                     b.Navigation("CategoryParent");
                 });
 
-            modelBuilder.Entity("ApiAppBangHang.Models.BookDescription", b =>
-                {
-                    b.HasOne("ApiAppBangHang.Models.ProductBook", "ProductBook")
-                        .WithMany("BookDescriptions")
-                        .HasForeignKey("BookId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("ProductBook");
-                });
-
             modelBuilder.Entity("ApiAppBangHang.Models.ProductBook", b =>
                 {
                     b.HasOne("ApiAppBangHang.Models.BookCategoryChild", "BookCategoryChild")
@@ -551,11 +525,6 @@ namespace ApiAppBangHang.Migrations
             modelBuilder.Entity("ApiAppBangHang.Models.BookTag", b =>
                 {
                     b.Navigation("ProductBooks");
-                });
-
-            modelBuilder.Entity("ApiAppBangHang.Models.ProductBook", b =>
-                {
-                    b.Navigation("BookDescriptions");
                 });
 
             modelBuilder.Entity("ApiAppBangHang.Models.UserAddress", b =>

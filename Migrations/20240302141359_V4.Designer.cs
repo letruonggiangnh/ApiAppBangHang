@@ -4,14 +4,16 @@ using ApiAppBangHang.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace ApiAppBangHang.Migrations
 {
     [DbContext(typeof(AppBanSachDbContext))]
-    partial class AppBanSachDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240302141359_V4")]
+    partial class V4
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -166,8 +168,8 @@ namespace ApiAppBangHang.Migrations
                     b.Property<int>("CategoryChildId")
                         .HasColumnType("int");
 
-                    b.Property<double>("Discount")
-                        .HasColumnType("float");
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ImageUrl")
                         .HasColumnType("nvarchar(max)");
