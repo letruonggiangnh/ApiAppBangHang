@@ -15,5 +15,6 @@ namespace ApiAppBanSach.Models
         public string PasswordHash { get; set; }
         public DateTime Updated { get; set; }
         public List<UserAddress> UserAddresses { get; set; }
+        public Cart Cart { get; set; }
     }
 }

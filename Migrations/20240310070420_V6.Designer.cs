@@ -4,14 +4,16 @@ using ApiAppBangHang.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace ApiAppBangHang.Migrations
 {
     [DbContext(typeof(AppBanSachDbContext))]
-    partial class AppBanSachDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240310070420_V6")]
+    partial class V6
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -145,51 +147,6 @@ namespace ApiAppBangHang.Migrations
                     b.HasKey("BookTagId");
 
                     b.ToTable("BookTags");
-                });
-
-            modelBuilder.Entity("ApiAppBangHang.Models.Cart", b =>
-                {
-                    b.Property<int>("CartId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("CartId");
-
-                    b.HasIndex("UserId")
-                        .IsUnique()
-                        .HasFilter("[UserId] IS NOT NULL");
-
-                    b.ToTable("Carts");
-                });
-
-            modelBuilder.Entity("ApiAppBangHang.Models.CartItem", b =>
-                {
-                    b.Property<int>("CartItemId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("BookId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("CartId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Quantity")
-                        .HasColumnType("int");
-
-                    b.HasKey("CartItemId");
-
-                    b.HasIndex("BookId")
-                        .IsUnique();
-
-                    b.HasIndex("CartId");
-
-                    b.ToTable("CartItems");
                 });
 
             modelBuilder.Entity("ApiAppBangHang.Models.ProductBook", b =>
@@ -499,34 +456,6 @@ namespace ApiAppBangHang.Migrations
                     b.Navigation("ProductBook");
                 });
 
-            modelBuilder.Entity("ApiAppBangHang.Models.Cart", b =>
-                {
-                    b.HasOne("ApiAppBanSach.Models.AppUser", "AppUser")
-                        .WithOne("Cart")
-                        .HasForeignKey("ApiAppBangHang.Models.Cart", "UserId");
-
-                    b.Navigation("AppUser");
-                });
-
-            modelBuilder.Entity("ApiAppBangHang.Models.CartItem", b =>
-                {
-                    b.HasOne("ApiAppBangHang.Models.ProductBook", "ProductBook")
-                        .WithOne("CartItem")
-                        .HasForeignKey("ApiAppBangHang.Models.CartItem", "BookId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("ApiAppBangHang.Models.Cart", "Cart")
-                        .WithMany("CartItems")
-                        .HasForeignKey("CartId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Cart");
-
-                    b.Navigation("ProductBook");
-                });
-
             modelBuilder.Entity("ApiAppBangHang.Models.ProductBook", b =>
                 {
                     b.HasOne("ApiAppBangHang.Models.BookCategoryChild", "BookCategoryChild")
@@ -608,8 +537,6 @@ namespace ApiAppBangHang.Migrations
 
             modelBuilder.Entity("ApiAppBanSach.Models.AppUser", b =>
                 {
-                    b.Navigation("Cart");
-
                     b.Navigation("UserAddresses");
                 });
 
@@ -628,16 +555,9 @@ namespace ApiAppBangHang.Migrations
                     b.Navigation("ProductBooks");
                 });
 
-            modelBuilder.Entity("ApiAppBangHang.Models.Cart", b =>
-                {
-                    b.Navigation("CartItems");
-                });
-
             modelBuilder.Entity("ApiAppBangHang.Models.ProductBook", b =>
                 {
                     b.Navigation("BookDescriptions");
-
-                    b.Navigation("CartItem");
                 });
 
             modelBuilder.Entity("ApiAppBangHang.Models.UserAddress", b =>

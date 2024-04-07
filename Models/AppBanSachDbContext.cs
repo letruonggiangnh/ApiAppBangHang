@@ -24,6 +24,8 @@ namespace ApiAppBangHang.Models
         public DbSet<BookCategoryParent> BookCategoryParents { get; set; }
         public DbSet<BookTag> BookTags { get; set; }
         public DbSet<BookDescription> BookDescriptions { get; set; }
+        public DbSet<CartItem> CartItems { get; set; }
+        public DbSet<Cart> Carts { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -75,6 +77,23 @@ namespace ApiAppBangHang.Models
                 entity.HasOne(bookDescription => bookDescription.ProductBook)
                       .WithMany(productBook => productBook.BookDescriptions)
                       .HasForeignKey(bookDescription => bookDescription.BookId);
+            });
+            builder.Entity<Cart>(entity =>
+            {
+                entity.HasKey(p => p.CartId);
+                entity.HasOne(cart => cart.AppUser)
+                      .WithOne(appUser => appUser.Cart)
+                      .HasForeignKey<Cart>(cart => cart.UserId);
+            });
+            builder.Entity<CartItem>(entity =>
+            {
+                entity.HasKey(p => p.CartItemId);
+                entity.HasOne(cartItem => cartItem.Cart)
+                      .WithMany(cart => cart.CartItems)
+                      .HasForeignKey(cartItem => cartItem.CartId);
+                entity.HasOne(cartItem => cartItem.ProductBook)
+                      .WithOne(productBook => productBook.CartItem)
+                      .HasForeignKey<CartItem>(cartitem => cartitem.BookId);
             });
         }
     }

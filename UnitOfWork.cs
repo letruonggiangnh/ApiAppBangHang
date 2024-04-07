@@ -14,7 +14,36 @@ namespace ApiAppBangHang
         AppBanSachDbContext context;
         private GenericRepository<AppUser> appUserRepository;
         private GenericRepository<ProductBook> productBookRepository;
+        private GenericRepository<BookCategoryChild> bookCategoryChildRepository;
+        private GenericRepository<BookDescription> bookDescriptionRepository;
+        private GenericRepository<CartItem> cartItemRepository;
+        private GenericRepository<Cart> cartRepository;
+
         private bool disposed = false;
+        public GenericRepository<Cart> CartRepository
+        {
+            get
+            {
+
+                if (this.cartRepository == null)
+                {
+                    this.cartRepository = new GenericRepository<Cart>(context);
+                }
+                return cartRepository;
+            }
+        }
+        public GenericRepository<CartItem> CartItemRepository
+        {
+            get
+            {
+
+                if (this.cartItemRepository == null)
+                {
+                    this.cartItemRepository = new GenericRepository<CartItem>(context);
+                }
+                return cartItemRepository;
+            }
+        }
         public GenericRepository<AppUser> AppUserRepository
         {
             get
@@ -27,6 +56,17 @@ namespace ApiAppBangHang
                 return appUserRepository;
             }
         }
+        public GenericRepository<BookCategoryChild> BookCategoryChildRepository
+        {
+            get
+            {
+                if (this.bookCategoryChildRepository == null)
+                {
+                    this.bookCategoryChildRepository = new GenericRepository<BookCategoryChild>(context);
+                }
+                return bookCategoryChildRepository;
+            }
+        }
 
         public GenericRepository<ProductBook> ProductBookRepository
         {
@@ -37,6 +77,18 @@ namespace ApiAppBangHang
                     this.productBookRepository = new GenericRepository<ProductBook>(context);
                 }
                 return productBookRepository;
+            }
+        }
+
+        public GenericRepository<BookDescription> BookDescriptionRepository
+        {
+            get
+            {
+                if (this.bookDescriptionRepository == null)
+                {
+                    this.bookDescriptionRepository = new GenericRepository<BookDescription>(context);
+                }
+                return bookDescriptionRepository;
             }
         }
 

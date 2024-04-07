@@ -26,7 +26,7 @@ namespace ApiAppBangHang
         {
             Configuration = configuration;
         }
-
+        readonly string MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
@@ -36,6 +36,16 @@ namespace ApiAppBangHang
             services.AddControllers();
             services.AddSingleton<IEmailSender, EmailSender>();
             services.AddDbContext<AppBanSachDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("SqlConnection")));
+            services.AddCors(options =>
+            {
+                options.AddPolicy(name: MyAllowSpecificOrigins,
+                                                     builder =>
+                                                     {
+                                      builder.WithOrigins("http://localhost:9000")
+                                      .AllowAnyHeader()
+                                      .AllowAnyMethod();
+                                  });
+            });
             services.AddIdentity<IdentityUser, IdentityRole>(options =>
             { 
                 options.User.RequireUniqueEmail = true;
@@ -84,6 +94,7 @@ namespace ApiAppBangHang
             app.UseAuthentication();
 
             app.UseAuthorization();
+            app.UseCors(MyAllowSpecificOrigins);
 
             app.UseEndpoints(endpoints =>
             {

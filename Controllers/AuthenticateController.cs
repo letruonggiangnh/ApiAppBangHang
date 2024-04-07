@@ -158,8 +158,9 @@ namespace ApiAppBanSach.Controllers
                     appUser.EmailAddress = user.Email;
                     appUser.Updated = DateTime.Now;
                     
-                    //tạo người dùng app
+                    //tạo người dùng app và tạo giỏ hàng
                     _unitOfWork.AppUserRepository.Insert(appUser);
+                    _unitOfWork.CartRepository.Insert(new Cart { UserId = user.Id });
                     _unitOfWork.Save();
 
 

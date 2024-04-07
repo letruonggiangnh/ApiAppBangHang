@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using Newtonsoft.Json;
+using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace ApiAppBangHang.Models
 {
@@ -7,7 +9,7 @@ namespace ApiAppBangHang.Models
         public int BookId { get; set; }
         public string BookName { get; set; }
         public string Author { get; set; }
-        public double Discount { get; set; }
+        public int Discount { get; set; }
         public string PackagingSize { get; set; }
         public string Weight { get; set; }
         public string PublishingCompany { get; set; }
@@ -19,8 +21,13 @@ namespace ApiAppBangHang.Models
         public int TagId { get; set; }
         public int SoldQuantity { get; set; }
         public int CategoryChildId { get; set; }
+        [System.Text.Json.Serialization.JsonIgnore]
         public BookCategoryChild BookCategoryChild { get; set; }
+        [System.Text.Json.Serialization.JsonIgnore]
         public BookTag BookTag { get; set; }
+        [System.Text.Json.Serialization.JsonIgnore]
         public List<BookDescription> BookDescriptions { get; set; }
+        [System.Text.Json.Serialization.JsonIgnore]
+        public CartItem CartItem { get; set; }
     }
 }
